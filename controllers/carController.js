@@ -16,7 +16,7 @@ const getCar = async (req, res) => {
     try {
         const cars = await Car.find()
 
-        res.send(students)
+        res.send(cars)
     } catch (error) {
         res.status(500).send(error)
     }

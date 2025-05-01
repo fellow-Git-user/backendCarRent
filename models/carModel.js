@@ -24,7 +24,9 @@ const carSchema = new mongoose.Schema({
                 const makeYear = new Date(value).getFullYear()
                 return makeYear <= currentYear
             },
-            message: 'Car make date cannot be in the future'
+            message: props => {
+                return ` car make ${props.value} cannot be in the future`
+            }
         }
     },
     engine: {
@@ -34,14 +36,12 @@ const carSchema = new mongoose.Schema({
         lowercase: true,
         enum: {
             values: ['petrol', 'diesel', 'hybrid', 'electric'],
-            message: '{VALUE} is not an engine type. Select of the following: petrol, diesel, hybrid or electric'
+            message: `{VALUE} is not an engine type. Select of the following: petrol, diesel, hybrid or electric`
         },
     },
     engineDisplacement: {
         type: Number,
         required: true,
-        min: 2,
-        max: 12
     },
     transmission: {
         type: String,
@@ -68,5 +68,5 @@ const carSchema = new mongoose.Schema({
  { timestamps: true }
 )
 
-const Car = mongoose.model('Student', carSchema)
+const Car = mongoose.model('Car', carSchema)
 module.exports = Car
