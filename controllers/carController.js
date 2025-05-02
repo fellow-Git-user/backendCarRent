@@ -46,11 +46,11 @@ const updateCar = async (req, res) => {
             { new: true }
         )
 
-        if(!car){
+        if(!updatedCar){
             return res.status(404).send({ error: 'car not found' })
         }
 
-        res.send(car)
+        res.send(updatedCar)
     } catch (error) {
         res.status(500).send(error)
     }
