@@ -16,7 +16,7 @@ export default defineConfig([
     },
   },
   {
-    files: ["app.js", "database.js"], // Target your specific app.js file
+    files: ["app.js", "database.js", ], // Target your specific app.js file
     rules: {
       "@typescript-eslint/no-require-imports": "off",
       "no-undef": "off", // Turn off the no-undef rule specifically for this file (or all .js)
@@ -24,4 +24,9 @@ export default defineConfig([
     },
     
   },
+  tseslint.config({
+    rules: {
+      "@typescript-eslint/no-require-imports": "off"
+    }
+  })
 ]);
