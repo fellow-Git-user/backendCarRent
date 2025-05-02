@@ -59,7 +59,8 @@ const userSchema = new mongoose.Schema({
                 return `${props.value} is not a valid email`
             }
         }
-    }, address: addressSchema
+    }, 
+    address: addressSchema
 }, { timestamps: true })
 
 const User = mongoose.model('Users', userSchema)
