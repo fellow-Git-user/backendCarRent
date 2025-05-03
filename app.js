@@ -13,9 +13,10 @@ app.use(express.json())
 
 const carRoutes = require('./routes/cars')
 const userRoutes = require('./routes/users')
-const clientRoutes = require('./routes/clients')
+const clientRoutes = require('./routes/clients');
+const authMiddleware = require('./middlewares/authMiddleware');
 
-app.use('/api/cars', carRoutes)
+app.use('/api/cars', authMiddleware, carRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/client', clientRoutes)
 
