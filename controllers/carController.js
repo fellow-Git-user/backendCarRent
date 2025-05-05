@@ -15,7 +15,7 @@ const createCar = async (req, res) => {
 const getCar = async (req, res) => {
     console.log(req.user) // cia gaunam userio informacija pvz surasti masina kuria nuomavosi sitas userris
     try {
-        const cars = await Car.find()
+        const cars = await Car.find().populate('albums', 'firstImage secondImage thirdImage')
 
         res.send(cars)
     } catch (error) {
