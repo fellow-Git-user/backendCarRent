@@ -5,7 +5,9 @@ const process = require('process')
 
 const register = async (req, res) => {
     const { name, email, password, surname, image, phone, 
-            street, flatNumber, city, country, role } = req.body
+            address, role } = req.body
+
+    const { street, flatNumber, city, country } = address || {}      
 
     if(!name || !email || !password || !surname || !image
          || !phone || !street || !flatNumber || !city || !country ) {
