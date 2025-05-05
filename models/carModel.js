@@ -16,13 +16,12 @@ const carSchema = new mongoose.Schema({
         trim: true
     },
     carMakeDate: {
-        type: Date,
+        type: Number,
         required: true,
         validate: {
             validator: function(value){
                 const currentYear = new Date().getFullYear()
-                const makeYear = new Date(value).getFullYear()
-                return makeYear <= currentYear
+                return value <= currentYear
             },
             message: props => {
                 return ` car make ${props.value} cannot be in the future`
