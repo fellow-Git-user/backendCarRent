@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const ROLES = require('../config/roles');
 
 const addressSchema = new mongoose.Schema({
     street: {
@@ -9,7 +10,7 @@ const addressSchema = new mongoose.Schema({
     flatNumber: {
         type: String,
         trim: true,
-        required: true,
+        // required: true,
     },
     city: {
         type: String,
@@ -27,12 +28,16 @@ const addressSchema = new mongoose.Schema({
 const userSchema = new mongoose.Schema({
     image: {
         type: String,
-        required: true,
     },
     name: {
         type: String,
         required: true,
-        trim: true
+        validate: {
+            validator: function(value){
+                return /^[a-zA-Z0-9ąčęėįšųūžĄČĘĖĮŠŲŪŽ]+$/.test(value)
+            },
+            message: props => `${props.value} is not a valid name`
+        }
     },
     surname: {
         type: String,
@@ -45,6 +50,7 @@ const userSchema = new mongoose.Schema({
         trim: true,
         unique: true
     },
+    address: addressSchema,
     email: {
         type: String,
         trim: true,
@@ -60,7 +66,15 @@ const userSchema = new mongoose.Schema({
             }
         }
     }, 
-    address: addressSchema
+    password: {
+            type: String,
+            required: true
+        },
+        role: {
+            type: String,
+            enum: Object.values(ROLES),
+            default: ROLES.USER
+        }
 }, { timestamps: true })
 
 const User = mongoose.model('Users', userSchema)

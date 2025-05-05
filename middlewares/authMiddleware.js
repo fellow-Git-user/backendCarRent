@@ -4,7 +4,8 @@ const process = require('process')
 
 const authMiddleware = (req, res, next) => {
     const token = req.header('Authorization')?.replace('Bearer ', '')
-    console.log(token)
+    console.log("🚀 ~ authMiddleware ~ this should be token:", token)
+    
 
     if(!token){
         return res.status(401).send({ message: 'Access denied. No token provided.' })
