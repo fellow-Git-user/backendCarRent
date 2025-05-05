@@ -1,6 +1,129 @@
 const User = require('../models/userModel')
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
+const process = require('process')
 
-const createUser = async (req, res) => {
+const register = async (req, res) => {
+    const { name, email, password, surname, image, phone, 
+            address, role } = req.body
+
+    const { street, flatNumber, city, country } = address || {}      
+
+    if(!name || !email || !password || !surname || !image
+         || !phone || !street || !flatNumber || !city || !country ) {
+        return res.status(400).send({ message: 'All fields are required' })
+    }
+
+    const existingUser = await User.findOne({ email: email })
+
+    if(existingUser) {
+        return res.status(400).send({ message: 'Email already exists' })
+    }
+
+    try {
+        const hashedPassword = await bcrypt.hash(password, 10)
+
+        const newUser = new User({
+            name,
+            email,
+            password: hashedPassword,
+            surname,
+            image,
+            phone,
+            address: {
+                street,
+                flatNumber,
+                city,
+                country
+            },
+            role
+        });
+
+        await newUser.save()
+
+        res.send({ message: 'User created successfully' })
+    } catch (error) {
+        res.status(500).send(error)
+    }
+}
+
+
+const login = async (req, res) => {
+    const { email, password } = req.body
+
+    if(!email || !password) {
+        return res.status(400).send({ message: 'Email or password is invalid' })
+    }
+
+    try {
+        const user = await User.findOne({ email: email })
+        if(!user) {
+            return res.status(400).send({ message: 'Invalid email or password' })
+        }
+
+        console.log(user.password)
+        console.log(password)
+
+        const isMatch = await bcrypt.compare(password, user.password)
+        if(!isMatch) {
+            return res.status(400).send({ message: 'Invalid email or password' })
+        }
+
+        const token = jwt.sign(
+            { 
+                id: user._id,
+                name: user.name,
+                email: user.email, 
+                password: user.password,
+                surname: user.surname,
+                image: user.image,
+                phone: user.phone,
+                street: user.address.street,
+                flatNumber: user.address.flatNumber,
+                city: user.address.city,
+                country: user.address.country,
+                role: user.role
+            
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: '3h' }
+        )
+        
+        console.log(token)
+
+        res.send({ message: 'User successfully logged in', token })
+    } catch (error) {
+        res.status(500).send(error)
+    }
+}
+
+const updateUser = async (req, res) => {
+    const { name, email, password, surname, image, phone, street, flatNumber, city, country } = req.body
+    const { id } = req.user
+    
+    if(!name) {
+        return res.status(400).send({ message: 'name field is required' })
+    }
+
+    try {
+        const changedUserData = await User.findByIdAndUpdate(
+            id,
+            { name, email, password, surname, image, phone, 
+              street, flatNumber, city, country },
+            { new: true }
+        )
+
+        if(!changedUserData) {
+            return res.status(404).send({ message: 'Nu such user found associated by this id', id })
+        }
+
+        res.send({ message: 'User successfully updated', user: name })
+    } catch (error) {
+        res.status(500).send(error)
+    }
+}
+
+const adminCreateUser = async (req, res) => {
     try {
         const user = new User(req.body)
         await user.save()
@@ -11,7 +134,7 @@ const createUser = async (req, res) => {
     }
 }
 
-const getUsers = async (req, res) => {
+const adminGetUsers = async (req, res) => {
     try {
         const users = await User.find()
         res.send(users)
@@ -20,7 +143,7 @@ const getUsers = async (req, res) => {
     }
 }
 
-const getUserByID = async (req, res) => {
+const adminGetUserByID = async (req, res) => {
     console.log(req.user) 
     try {
         const { id } = req.params
@@ -36,7 +159,7 @@ const getUserByID = async (req, res) => {
     }
 }
 
-const updateUser = async (req, res) => {
+const adminUpdateUser = async (req, res) => {
     try {
         const { id } = req.params
 
@@ -56,7 +179,7 @@ const updateUser = async (req, res) => {
     }
 }
 
-const deleteUser = async (req, res) => {
+const adminDeleteUser = async (req, res) => {
     try {
         const { id } = req.params
         const deletedUser = await User.findByIdAndDelete(id)
@@ -72,10 +195,15 @@ const deleteUser = async (req, res) => {
 }
 
 module.exports = {
-    createUser,
-    getUsers,
-    getUserByID,
-    updateUser,
-    deleteUser
+    adminCreateUser,
+    adminGetUsers,
+    adminGetUserByID,
+    adminUpdateUser,
+    adminDeleteUser,
+    register,
+    login,
+    updateUser
+    
+    
 
 }
