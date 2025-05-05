@@ -29,11 +29,12 @@ const getCarByID = async (req, res) => {
         const car = await Car.findById(id)
 
         if(!car){
-            return res.status(404).send({ error: 'car not found' })
+            return res.status(404).send({ error: 'Car not found' })
         }
 
         res.send(car)
     } catch (error) {
+        console.error('Error fetching car:', error)
         res.status(500).send(error)
     }
 }
