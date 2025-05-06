@@ -15,10 +15,11 @@ const createCar = async (req, res) => {
 const getCar = async (req, res) => {
     console.log(req.user) // cia gaunam userio informacija pvz surasti masina kuria nuomavosi sitas userris
     try {
-        const cars = await Car.find().populate('albums', 'firstImage secondImage thirdImage')
+        const cars = await Car.find().populate('albums', 'brand model firstImage secondImage thirdImage');
 
         res.send(cars)
     } catch (error) {
+        console.error("Error fetching cars:", error)
         res.status(500).send(error)
     }
 }
@@ -26,7 +27,7 @@ const getCar = async (req, res) => {
 const getCarByID = async (req, res) => {
     try {
         const { id } = req.params
-        const car = await Car.findById(id)
+        const car = await Car.findById(id).populate('albums', 'brand model firstImage secondImage thirdImage');
 
         if(!car){
             return res.status(404).send({ error: 'Car not found' })

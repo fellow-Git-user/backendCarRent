@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
 
 const albumSchema = new mongoose.Schema ({
@@ -39,6 +39,6 @@ const albumSchema = new mongoose.Schema ({
     },
 })
 
-const Album = mongoose.model('Album', albumSchema)
+const Album = mongoose.model('Albums', albumSchema)
 
 module.exports = Album

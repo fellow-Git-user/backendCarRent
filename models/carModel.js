@@ -65,7 +65,7 @@ const carSchema = new mongoose.Schema({
     },
     albums: {
         type: [mongoose.Schema.Types.ObjectId],
-        ref: 'Album'
+        ref: 'Albums'
     }
 },
  { timestamps: true }

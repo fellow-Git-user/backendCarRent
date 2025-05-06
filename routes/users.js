@@ -9,7 +9,7 @@ router.post('/register', register)
 router.post('/login', login)
 router.put('/update', authMiddleware, updateUser)
 
-router.get('/', authMiddleware, rolesMiddleware(ROLES.ADMIN),  adminGetUsers)
+router.get('/', authMiddleware, rolesMiddleware(ROLES.ADMIN), adminGetUsers)
 router.get('/:id', authMiddleware, rolesMiddleware(ROLES.ADMIN), adminGetUserByID)
 router.post('/', authMiddleware, rolesMiddleware(ROLES.ADMIN), adminCreateUser)
 router.put('/:id', authMiddleware, rolesMiddleware(ROLES.ADMIN), adminUpdateUser)

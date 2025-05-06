@@ -1,7 +1,6 @@
 
 
 module.exports = function(...allowedRoles) {
-console.log("🚀 ~ allowedRoles:", allowedRoles)
 
     return (req, res, next) => {
 

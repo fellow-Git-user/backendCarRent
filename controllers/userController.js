@@ -41,7 +41,27 @@ const register = async (req, res) => {
 
         await newUser.save()
 
-        res.send({ message: 'User created successfully' })
+        const user = await User.findOne({ email: email })
+
+        const token = jwt.sign(
+            {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                surname: user.surname,
+                image: user.image,
+                phone: user.phone,
+                street: user.address.street,
+                flatNumber: user.address.flatNumber,
+                city: user.address.city,
+                country: user.address.country,
+                role: user.role
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: '3h' }
+        );
+
+        res.status(201).send({ message: 'User successfully registered', token, user });
     } catch (error) {
         res.status(500).send(error)
     }
@@ -60,9 +80,6 @@ const login = async (req, res) => {
         if(!user) {
             return res.status(400).send({ message: 'Invalid email or password' })
         }
-
-        console.log(user.password)
-        console.log(password)
 
         const isMatch = await bcrypt.compare(password, user.password)
         if(!isMatch) {
@@ -89,7 +106,7 @@ const login = async (req, res) => {
             { expiresIn: '3h' }
         )
         
-        console.log(token)
+        
 
         res.send({ message: 'User successfully logged in', token })
     } catch (error) {
@@ -98,7 +115,8 @@ const login = async (req, res) => {
 }
 
 const updateUser = async (req, res) => {
-    const { name, email, password, surname, image, phone, street, flatNumber, city, country } = req.body
+    const { name, email, password, surname, image, phone, address } = req.body
+    const { street, flatNumber, city, country } = address || {}
     const { id } = req.user
     
     if(!name) {
@@ -106,15 +124,32 @@ const updateUser = async (req, res) => {
     }
 
     try {
+
+        let updateData = {
+            name,
+            email,
+            surname,
+            image,
+            phone,
+            address
+        }
+
+        if (password) { 
+            const hashedPassword = await bcrypt.hash(password, 10);
+            updateData.password = hashedPassword; 
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10)
+
         const changedUserData = await User.findByIdAndUpdate(
             id,
-            { name, email, password, surname, image, phone, 
-              street, flatNumber, city, country },
+            updateData,
             { new: true }
         )
+        console.log("🚀 ~ updateUser ~ changedUserData:", changedUserData);
 
         if(!changedUserData) {
-            return res.status(404).send({ message: 'Nu such user found associated by this id', id })
+            return res.status(404).send({ message: 'No such user found associated by this id', id })
         }
 
         res.send({ message: 'User successfully updated', user: name })
