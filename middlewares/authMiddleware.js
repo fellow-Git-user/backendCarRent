@@ -4,7 +4,6 @@ const process = require('process')
 
 const authMiddleware = (req, res, next) => {
     const token = req.header('Authorization')?.replace('Bearer ', '')
-    console.log("🚀 ~ authMiddleware ~ this should be token:", token)
     
 
     if(!token){
