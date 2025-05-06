@@ -14,12 +14,14 @@ app.use(express.json())
 const carRoutes = require('./routes/cars')
 const userRoutes = require('./routes/users')
 const albumRoutes = require('./routes/albums');
+const reviewRoutes = require('./routes/reviews');
 const authMiddleware = require('./middlewares/authMiddleware');
 
 
 app.use('/api/cars', authMiddleware, carRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/albums', albumRoutes)
+app.use('/api/reviews', reviewRoutes)
 
 const PORT = process.env.PORT || 3005
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`))
