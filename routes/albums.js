@@ -5,7 +5,7 @@ const router = express.Router()
 
 router.get('/', getAlbum)
 router.get('/:id', getAlbumByID)
-router.post('/', createAlbum)
+router.post('/create', createAlbum)
 router.put('/:id', updateAlbum)
 router.delete('/:id', deleteAlbum)
 

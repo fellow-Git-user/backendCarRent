@@ -2,17 +2,17 @@ const mongoose = require('mongoose');
 
 
 const albumSchema = new mongoose.Schema ({
-    brand: {
+    carBrand: {
         type: String,
         required: true,
         trim: true
     },
-    model: {
+    carModel: {
         type: String,
         required: true,
         trim: true
     },
-    carMakeDate: {
+    carManufactureDate: {
         type: Number,
         required: true,
         validate: {
