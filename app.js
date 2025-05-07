@@ -10,7 +10,7 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
-// const authMiddleware = require('./middlewares/authMiddleware');
+const authMiddleware = require('./middlewares/authMiddleware');
 
 const carRoutes = require('./routes/cars')
 const userRoutes = require('./routes/users')
@@ -19,7 +19,7 @@ const reviewRoutes = require('./routes/reviews');
 
 
 
-app.use('/api/cars', carRoutes)
+app.use('/api/cars', authMiddleware, carRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/albums', albumRoutes);
 app.use('/api/reviews', reviewRoutes);

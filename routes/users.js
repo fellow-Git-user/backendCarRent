@@ -11,7 +11,7 @@ router.put('/update', authMiddleware, updateUser)
 
 router.get('/', authMiddleware, rolesMiddleware(ROLES.ADMIN), adminGetUsers)
 router.get('/:id', authMiddleware, rolesMiddleware(ROLES.ADMIN), adminGetUserByID)
-router.post('/', authMiddleware, rolesMiddleware(ROLES.ADMIN), adminCreateUser)
+router.post('/create', authMiddleware, rolesMiddleware(ROLES.ADMIN), adminCreateUser)
 router.put('/:id', authMiddleware, rolesMiddleware(ROLES.ADMIN), adminUpdateUser)
 router.delete('/:id', authMiddleware, rolesMiddleware(ROLES.ADMIN), adminDeleteUser)
 
