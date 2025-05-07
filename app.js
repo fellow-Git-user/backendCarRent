@@ -19,7 +19,7 @@ const reviewRoutes = require('./routes/reviews');
 
 
 
-app.use('/api/cars', authMiddleware, carRoutes)
+app.use('/api/cars', carRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/albums', albumRoutes);
 app.use('/api/reviews', reviewRoutes);
