@@ -4,14 +4,9 @@ const Car = require('../models/carModel')
 const createReviewForCar = async (req, res) => {
     
     try {
-        console.log('--- Inside createReviewForCar ---');
-        console.log('req.user received from authMiddleware:', req.user); // <--- ADD THIS LOG
-
         const { id } = req.params
         const { title, body, rating } = req.body
         const userId = req.user.id 
-        console.log("🚀 ~ createReviewForCar ~ REQ.USER:", req.user)
-
 
         if (!req.user || !req.user.id) {
             
@@ -19,21 +14,14 @@ const createReviewForCar = async (req, res) => {
             return res.status(401).json({ message: 'Authentication error: User information not found in request. Ensure you are logged in and token is valid.' });
         }
 
-        
-
         if (!title || !body || !rating) {
             return res.status(400).send({ message: 'All fields are required.' });
         }
-
-        
 
         const car = await Car.findById(id)
         if (!car) {
             return res.status(404).send({ message: 'Car not found.' });
         }
-
-        
-
 
         const review = new Review({
             title,
@@ -42,22 +30,11 @@ const createReviewForCar = async (req, res) => {
             car: id,
             user: userId
         })
-        console.log("🚀 ~ createReviewForCar ~ userId:", userId)
-
-        console.log("🚀 ~ createReviewForCar ~ LABAS:")
-
         await review.save()
-
         
 
         car.reviews.push(review._id)
-
-
-
         await car.save()
-
-       
-
 
         const populatedReview = await Review.findById(review._id).populate('user', 'name image')
         res.status(201).send({ message: 'Review added successfully', review: populatedReview  })
@@ -78,9 +55,10 @@ const getReviewsForCar = async (req, res) => {
 
     console.log(req.user) 
     try {
-        const { id } = req.param
+        const { id } = req.params
 
         const carExists = await Car.findById(id);
+        console.log("🚀 ~ getReviewsForCar ~ carExists:", carExists)
         if(!carExists) {
             return res.status(404).send({ message: 'Car not found' });
         }
@@ -89,10 +67,25 @@ const getReviewsForCar = async (req, res) => {
             .populate('user', 'name image')
             .sort({ createdAt: -1 })
 
-        res.send(reviews)
+        if(reviews.length === 0) {
+            res.status(200).send({ message: "This car has 0 reviews" })
+        } else {
+            res.send(reviews)
+        }
     } catch (error) {
         console.error("Error fetching reviews:", error)
         res.status(500).send({ message: 'Server error', error })
+    }
+}
+
+const getAllReviews = async (req, res) => {
+    try {
+        const reviews = await Review.find().populate('user', 'name image');
+
+        res.send(reviews)
+    } catch (error) {
+        console.error("Error fetching reviews:", error)
+        res.status(500).send(error)
     }
 }
 
@@ -150,6 +143,7 @@ const deleteReview = async (req, res) => {
 module.exports = {
     createReviewForCar,
     getReviewsForCar,
+    getAllReviews,
     getReviewByID,
     updateReview,
     deleteReview
