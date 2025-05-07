@@ -8,7 +8,7 @@ const router = express.Router()
 
 router.get('/', getCar)
 router.get('/:id', getCarByID)
-router.post('/create', rolesMiddleware(ROLES.ADMIN), createCar)
+router.post('/create', authMiddleware, rolesMiddleware(ROLES.ADMIN), createCar)
 router.put('/:id', rolesMiddleware(ROLES.ADMIN), updateCar)
 router.delete('/:id', rolesMiddleware(ROLES.ADMIN), deleteCar)
 
