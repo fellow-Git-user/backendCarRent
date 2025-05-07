@@ -8,6 +8,8 @@ const createReviewForCar = async (req, res) => {
         const { title, body, rating } = req.body
         const userId = req.user.id 
 
+        console.log("Received review data:", { id, title, body, rating, userId });
+
         if (!req.user || !req.user.id) {
             
             console.error('Authentication error: req.user or req.user._id is missing.');
@@ -33,17 +35,17 @@ const createReviewForCar = async (req, res) => {
         await review.save()
         
 
+        const populatedReview = await Review.findById(review._id).populate('user', 'name image')
         car.reviews.push(review._id)
         await car.save()
 
-        const populatedReview = await Review.findById(review._id).populate('user', 'name image')
         res.status(201).send({ message: 'Review added successfully', review: populatedReview  })
-
-        console.log(req.body)
-        res.send(review)
     } catch (error) {
+        
         console.error("Error creating review for car:", error);
+        
         if (error.name === 'ValidationError') {
+
             return res.status(400).json({ message: 'Validation Error', errors: error.errors });
         }
         res.status(500).send({ message: 'Server error', error })
