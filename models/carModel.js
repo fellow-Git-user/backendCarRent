@@ -66,7 +66,19 @@ const carSchema = new mongoose.Schema({
     albums: {
         type: [mongoose.Schema.Types.ObjectId],
         ref: 'Albums'
-    }
+    },
+    reviews: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Review'
+    }],
+    averageRating: {
+            type: Number,
+            default: 0
+        },
+    numReviews: {
+            type: Number,
+            default: 0
+        }
 },
  { timestamps: true }
 )
