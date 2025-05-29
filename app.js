@@ -10,6 +10,29 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
+const FRONTEND_URL = process.env.FRONTEND_URL;
+
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:5173',
+  'http://localhost:8080', 
+  FRONTEND_URL 
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      const msg = `The CORS policy for this site does not allow access from the specified Origin: ${origin}`;
+      callback(new Error(msg), false);
+    }
+  },
+  credentials: true // Set this to true if your frontend sends cookies, authorization headers, etc.
+}));
+
 const authMiddleware = require('./middlewares/authMiddleware');
 
 const carRoutes = require('./routes/cars')
