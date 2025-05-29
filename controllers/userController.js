@@ -51,10 +51,12 @@ const register = async (req, res) => {
                 surname: user.surname,
                 image: user.image,
                 phone: user.phone,
-                street: user.address.street,
-                flatNumber: user.address.flatNumber,
-                city: user.address.city,
-                country: user.address.country,
+                address: {
+                    street: user.address.street,
+                    flatNumber: user.address.flatNumber,
+                    city: user.address.city,
+                    country: user.address.country
+                },
                 role: user.role
             },
             process.env.JWT_SECRET,
@@ -95,10 +97,12 @@ const login = async (req, res) => {
                 surname: user.surname,
                 image: user.image,
                 phone: user.phone,
-                street: user.address.street,
-                flatNumber: user.address.flatNumber,
-                city: user.address.city,
-                country: user.address.country,
+                address: {
+                    street: user.address.street,
+                    flatNumber: user.address.flatNumber,
+                    city: user.address.city,
+                    country: user.address.country
+                },
                 role: user.role
             
             },
