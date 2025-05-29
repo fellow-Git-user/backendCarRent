@@ -152,7 +152,7 @@ const updateUser = async (req, res) => {
             return res.status(404).send({ message: 'No such user found associated by this id', id })
         }
 
-        res.send({ message: 'User successfully updated', user: name })
+        res.send({ message: 'User successfully updated', user: changedUserData })
     } catch (error) {
         res.status(500).send(error)
     }
